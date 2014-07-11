@@ -1,29 +1,21 @@
 # import the data
-df <- read.table(file = "./household_power_consumption.txt", 
-                   sep = ";", 
-                   header = TRUE, 
-                   dec = ".",
-                   na.strings = "?"
-                 )
+df <- read.table(pipe('grep "^[1-2]/2/2007" "./household_power_consumption.txt"'),header=F, sep=';')
+colnames(df) <-names(read.table('./household_power_consumption.txt', header=TRUE,sep=";",nrows=1))
+
 # convert Date string to Date object. This reformats the representation to yyyy-mm-dd implicitly !!!!
 df$Date <- as.Date(df$Date,"%d/%m/%Y")
-# filter the data
-data_small <- subset(df,
-                     Date =="2007-02-01" |
-                     Date =="2007-02-02"
-)
 
 # merge Date and Time into DateTime column
-data_small$DateTime <- paste(data_small$Date, data_small$Time)
-data_small$DateTime <- strptime(data_small$DateTime, "%Y-%m-%d %H:%M:%S")
+df$DateTime <- paste(df$Date, df$Time)
+df$DateTime <- strptime(df$DateTime, "%Y-%m-%d %H:%M:%S")
 # consider just complete cases
-data_small <- data_small[!is.na(data_small$Global_active_power), ]
+df <- df[!is.na(df$Global_active_power), ]
 #********************************************************************
 Sys.setlocale(category = "LC_TIME", locale = "C")
 # plot the graphics
 png("plot4.png", width=480, height=480)
 par(mfrow=c(2,2))
-with(data_small, {
+with(df, {
   # figure 1
   plot(DateTime, Global_active_power, type="l",xlab = "",ylab = "Global active power (kilowatts)")
   # figure 2
@@ -38,4 +30,5 @@ with(data_small, {
 })
 # close the graphics device
 dev.off()
+
 
