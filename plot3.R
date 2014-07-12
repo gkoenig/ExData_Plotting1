@@ -23,7 +23,8 @@ df$Date <- as.Date(df$Date,"%d/%m/%Y")
 df$DateTime <- paste(df$Date, df$Time)
 df$DateTime <- strptime(df$DateTime, "%Y-%m-%d %H:%M:%S")
 # consider just complete cases
-df <- df[!is.na(df$Global_active_power), ]
+cc <- complete.cases(df)
+df <- df[cc, ]
 #********************************************************************
 Sys.setlocale(category = "LC_TIME", locale = "C")
 # plot the graphics

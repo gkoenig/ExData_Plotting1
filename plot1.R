@@ -4,7 +4,8 @@ colnames(df) <-names(read.table('./household_power_consumption.txt', header=TRUE
 # convert Date string to Date object. This reformats the representation to yyyy-mm-dd implicitly !!!!
 df$Date <- as.Date(df$Date,"%d/%m/%Y")
 # consider just complete cases
-df <- df[!is.na(df$Global_active_power), ]
+cc <- complete.cases(df)
+df <- df[cc, ]
 # plot the histogram containing Global_active_power and its frequency into a PNG file
 png("plot1.png", width=480, height=480)
 hist(df$Global_active_power, 
